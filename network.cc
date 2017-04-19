@@ -32,7 +32,6 @@ std::vector<Eigen::VectorXd> Network::propagate(std::vector<Eigen::VectorXd> inp
             .compute(inputs.at(l), previous_output);
         outputs.push_back(previous_output);
     }
-    std::cout << "propagation complete" << '\n';
     return(outputs);
 }
 
@@ -44,17 +43,13 @@ void Network::backpropagate(std::vector<Eigen::VectorXd> expected_outputs) {
     if (expected_outputs.size() != layers.size()) {
         throw std::logic_error("Layer size != expected_outputs size");
     }
-    std::cout << "Starting backpropagation" << '\n';
     Eigen::VectorXd delta_prev = Eigen::VectorXd::Zero(layer_size);
     for (int l=expected_outputs.size()-1; l >= 0; l--) {
         Eigen::VectorXd delta = costfunction(
-            this->layers.at(l).output, expected_outputs.at(l));
+            expected_outputs.at(l), this->layers.at(l).output);
         delta = delta + delta_prev;
         delta_prev = this->layers.at(l).compute_gradient(delta);
         // this->layers.at(l).compute_weight_gradient();
     }
-    std::cout << "Gradient backpropagation complete" << '\n';
-    std::cout << weights->delta_weight_input << '\n';
     this->weights->apply_gradient(0.1);
-    std::cout << "Gradient applied" << std::endl;
 }
