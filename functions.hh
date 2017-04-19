@@ -20,5 +20,5 @@ double tanhyp(double x);
 Eigen::VectorXd costfunction(Eigen::VectorXd expected_output, Eigen::VectorXd output);
 Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output);
-
+double threshold(double x);
 #endif

@@ -52,3 +52,12 @@ Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
         * output)-expected_output)));
     }
 }
+
+double threshold(double x) {
+    double level = 0.3;
+    if (x > level) {
+        return (1);
+    } else {
+        return(0);
+    }
+}

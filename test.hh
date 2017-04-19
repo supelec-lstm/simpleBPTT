@@ -20,5 +20,6 @@
 void single_cell_test();
 void single_grammar_test();
 Eigen::VectorXd get_input(char letter);
+std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> output);
 
 #endif
