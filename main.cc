@@ -69,7 +69,8 @@ int main(int argc, char **argv) {
     network.backpropagate(expected_outputs);
     std::cout << "backpropagation complete" << '\n';
     */
-    single_cell_test();
+    // single_cell_test();
+    single_grammar_test();
 
     return 0;
 }

@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <vector>
 #include "test.hh"
@@ -104,123 +105,69 @@ void single_cell_test() {
     std::cout << "===================" << '\n';
 }
 
-/*
-void single_cell_grammar_test() {
+void single_grammar_test() {
     int input_size = 7;
     int output_size = 7;
-    int words_to_learn = 1;
-
-    Weights* cell_weight = new Weights(input_size, output_size);
-
-    std::ifstream file("reber_test_1M.txt");
-    std::string str;
-    std::vector<Eigen::MatrixXd> deltas;
-
-    while ((std::getline(file, str)) && (0 < words_to_learn)) {
-        int lenght_word = str.length();
-        std::vector<Eigen::MatrixXd> deltas;
-        std::vector<Eigen::MatrixXd> result;
-
-        Eigen::MatrixXd previous_output =
-            Eigen::MatrixXd::Zero(output_size, 1);
-        Eigen::MatrixXd previous_memory =
-            Eigen::MatrixXd::Zero(output_size, 1);
-
-        std::vector<Cell> network;
-
-        for (int i = 0; i < lenght_word-1; ++i) {
-            Cell cell = Cell(cell_weight);
-            Eigen::MatrixXd in = get_input(str.at(i));
-            Eigen::MatrixXd expected = get_input(str.at(i+1));
-            result = cell.compute(previous_output, &previous_memory, in);
-            previous_output = result.at(0);
-            deltas.push_back((previous_output - expected)
-                .cwiseProduct(previous_output - expected));
-            previous_memory = result.at(1);
-            network.push_back(cell);
-        }
-
-        Eigen::MatrixXd previous_delta_cell_in =
-            Eigen::MatrixXd::Zero(output_size, 1);
-        Eigen::MatrixXd previous_delta_cell_state =
-            Eigen::MatrixXd::Zero(output_size, 1);
-
-        for (int i = lenght_word-2; i >= 0; --i) {
-            result = network.at(i).compute_gradient(&deltas.at(i),
-                &previous_delta_cell_in, &previous_delta_cell_state);
-        }
-        cell_weight->apply_gradient(0.1);
-    }
-    std::cout << "Learning done" << std::endl;
-
-    Eigen::MatrixXd previous_output =
-        Eigen::MatrixXd::Zero(output_size, 1);
-    Eigen::MatrixXd previous_memory =
-        Eigen::MatrixXd::Zero(output_size, 1);
-
-    Cell cell = Cell(cell_weight);
-    std::vector<Eigen::MatrixXd> result;
-    Eigen::MatrixXd B = get_input('B');
-    Eigen::MatrixXd P = get_input('P');
-    Eigen::MatrixXd V = get_input('V');
-    Eigen::MatrixXd E = get_input('E');
-
-    std::cout << "========= On donne B ========" << std::endl;
-    result = cell.compute(previous_output, &previous_memory, B);
-    previous_output = result.at(0);
-    previous_memory = result.at(1);
-    std::cout << result.at(0) << std::endl;
-
-    std::cout << "========= On donne P ========" << std::endl;
-    result = cell.compute(previous_output, &previous_memory, P);
-    previous_output = result.at(0);
-    previous_memory = result.at(1);
-    std::cout << result.at(0) << std::endl;
-
-    std::cout << "========= On donne V ========" << std::endl;
-    result = cell.compute(previous_output, &previous_memory, V);
-    previous_output = result.at(0);
-    previous_memory = result.at(1);
-    std::cout << result.at(0) << std::endl;
-}
-*/
-/*
-void single_cell_grammar_test() {
-    int input_size = 7;
-    int output_size = 7;
+    int layer_size = 25;
     int words_to_learn = 50000;
 
-    Weights* cell_weight = new Weights(input_size, output_size);
-    Cell cell = Cell(cell_weight);
+    Weights* weights = new Weights(input_size, layer_size);
+    Network network = Network(weights, input_size, output_size, layer_size);
 
     std::ifstream file("reber_test_1M.txt");
     std::string str;
-    std::vector<Eigen::MatrixXd> deltas;
+    std::vector<Eigen::VectorXd> deltas;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
 
+
+    std::cout << "===== Beginnning of Learning =====" << '\n';
     while ((std::getline(file, str)) && (0 < words_to_learn)) {
         int lenght_word = str.length();
-        for (int i = 0; i < lenght_word; ++i) {
-            Eigen::MatrixXd in = get_input(str.at(i));
-            cell.compute(&in);
-            deltas.push_back((in - cell.cell_out.back())
-                .cwiseProduct((in - cell.cell_out.back())));
+        for (int i = 0; i < lenght_word-1; ++i) {
+            inputs.push_back(get_input(str.at(i)));
+            expected_outputs.push_back(get_input(str.at(i+1)));
         }
 
-        for (int i = lenght_word - 1 ; i >= 0; --i) {
-            Eigen::MatrixXd delta = deltas.at(i);
-            cell.compute_gate_gradient(&delta, i);
-        }
-        cell.compute_weight_gradient();
-        cell.update_weights(0.3);
-        cell.reset();
+        std::cout << "Words remaining " << words_to_learn;
+        std::cout << " - propagation";
+        propagation = network.propagate(inputs);
+        std::cout << " - backpropagation";
+        network.backpropagate(expected_outputs);
+        std::cout << " - cleaning" << '\n';
+        network.reset_layers();
+        inputs.clear();
+        expected_outputs.clear();
         words_to_learn -= 1;
     }
-    Eigen::MatrixXd in(7, 1);
-    in << 1, 0, 0, 0, 0, 0, 0;
-    cell.compute(&in);
-    std::cout << cell.cell_out.back() << std::endl;
+    std::cout << "===== End of Learning =====" << '\n';
+    std::cout << "===== Testing =====" << '\n';
+
+    inputs.push_back(get_input('B'));
+    inputs.push_back(get_input('P'));
+    inputs.push_back(get_input('V'));
+    inputs.push_back(get_input('V'));
+
+
+    std::cout << "Learning";
+    // std::cout << "Starting propagation" << std::endl;
+    std::cout << " - propagation" << '\n';
+    propagation = network.propagate(inputs);
+
+    std::cout << "========= On donne B ========" << std::endl;
+    std::cout << propagation.at(0) << '\n';
+
+    std::cout << "========= On donne P ========" << std::endl;
+    std::cout << propagation.at(1) << '\n';
+
+    std::cout << "========= On donne V ========" << std::endl;
+    std::cout << propagation.at(2) << '\n';
+
+    std::cout << "========= On donne V ========" << std::endl;
+    std::cout << propagation.at(3) << '\n';
 }
-*/
+
 Eigen::VectorXd get_input(char letter) {
     Eigen::VectorXd in(7);
     switch (letter) {
