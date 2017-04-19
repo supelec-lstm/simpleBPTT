@@ -25,6 +25,6 @@ class Layer {
                             Eigen::VectorXd previous_output);
 
     Eigen::VectorXd compute_gradient(Eigen::VectorXd deltas);
-    //void compute_weight_gradient();
+    // void compute_weight_gradient();
 };
 #endif

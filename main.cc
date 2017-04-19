@@ -13,12 +13,11 @@
 #include "layer.hh"
 #include "functions.hh"
 #include "iostream"
-
-
-//#include "test.hh"
+#include "test.hh"
 
 
 int main(int argc, char **argv) {
+    /*
     int input_size = 5;
     int output_size = 20;
     Weights* weights = new Weights(input_size, output_size);
@@ -69,6 +68,8 @@ int main(int argc, char **argv) {
     expected_outputs.push_back(expected_output);
     network.backpropagate(expected_outputs);
     std::cout << "backpropagation complete" << '\n';
+    */
+    single_cell_test();
 
     return 0;
 }
