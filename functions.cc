@@ -35,6 +35,20 @@ Eigen::VectorXd costfunction(Eigen::VectorXd expected_output,
         return((expected_output-output).cwiseProduct(expected_output-output));
     } else {
         int layer_size = output.size();
-        return(Eigen::MatrixXd::Identity(layer_size, expected_output.size()) * (((Eigen::MatrixXd::Identity(expected_output.size(), layer_size) * output)-expected_output).array().pow(2).matrix()));
+        return(Eigen::MatrixXd::Identity(layer_size, expected_output.size())
+        * (((Eigen::MatrixXd::Identity(expected_output.size(), layer_size)
+        * output)-expected_output).array().pow(2).matrix()));
+    }
+}
+
+Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
+                             Eigen::VectorXd output) {
+    if (expected_output.size() == output.size()) {
+        return((expected_output-output).cwiseProduct(expected_output-output));
+    } else {
+        int layer_size = output.size();
+        return(- Eigen::MatrixXd::Identity(layer_size, expected_output.size())
+        * (((Eigen::MatrixXd::Identity(expected_output.size(), layer_size)
+        * output)-expected_output)));
     }
 }

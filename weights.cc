@@ -42,13 +42,13 @@ void Weights::apply_gradient(double lambda) {
 // We apply the weight variations
     this->weight_input =
         this->weight_input
-        - lambda * this->delta_weight_input;
+        + lambda * this->delta_weight_input;
 
     this->weight_prev =
         this->weight_prev
-        - lambda * this->delta_weight_prev;
+        + lambda * this->delta_weight_prev;
 
-    this->bias-= lambda * this->delta_bias;
+    this->bias = this->bias + lambda * this->delta_bias;
 // We set a null gradient
     this->delta_weight_input = Eigen::MatrixXd::Zero(
         this->output_size,

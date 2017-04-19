@@ -18,7 +18,7 @@
 void single_cell_test() {
     int input_size = 26;
     int output_size = 26;
-    int layer_size = 30;
+    int layer_size = 40;
 
     std::cout << "creating weights" << '\n';
 
@@ -26,36 +26,55 @@ void single_cell_test() {
 
     std::vector<Eigen::VectorXd> inputs;
 
-    Eigen::VectorXd inputW(input_size);
-    inputW << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0, 0, 0;
+    Eigen::VectorXd inputS(input_size);
+    inputS << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+    0, 0, 0, 0, 0, 0;
+
+    Eigen::VectorXd inputH(input_size);
+    inputH << 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0;
 
     Eigen::VectorXd inputA(input_size);
     inputA << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0;
 
-    Eigen::VectorXd inputR(input_size);
-    inputR << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    Eigen::VectorXd inputK(input_size);
+    inputK << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0;
 
-    Eigen::VectorXd inputP(input_size);
-    inputP << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0;
-
-    Eigen::VectorXd input0(input_size);
-    inputP << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0;
-
-    inputs.push_back(inputW);
+    inputs.push_back(inputS);
+    inputs.push_back(inputH);
     inputs.push_back(inputA);
-    inputs.push_back(inputR);
-    inputs.push_back(inputP);
+    inputs.push_back(inputK);
+    inputs.push_back(inputA);
+    inputs.push_back(inputS);
+    inputs.push_back(inputH);
+    inputs.push_back(inputA);
+    inputs.push_back(inputK);
+    inputs.push_back(inputA);
+    inputs.push_back(inputS);
+    inputs.push_back(inputH);
+    inputs.push_back(inputA);
+    inputs.push_back(inputK);
+    inputs.push_back(inputA);
 
     std::vector<Eigen::VectorXd> expected_outputs;
+    expected_outputs.push_back(inputH);
     expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputR);
-    expected_outputs.push_back(inputP);
-    expected_outputs.push_back(input0);
+    expected_outputs.push_back(inputK);
+    expected_outputs.push_back(inputA);
+    expected_outputs.push_back(inputS);
+    expected_outputs.push_back(inputH);
+    expected_outputs.push_back(inputA);
+    expected_outputs.push_back(inputK);
+    expected_outputs.push_back(inputA);
+    expected_outputs.push_back(inputS);
+    expected_outputs.push_back(inputH);
+    expected_outputs.push_back(inputA);
+    expected_outputs.push_back(inputK);
+    expected_outputs.push_back(inputA);
+    expected_outputs.push_back(inputS);
+
 
     Network network = Network(weights, input_size, output_size, layer_size);
 

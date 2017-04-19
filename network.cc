@@ -45,7 +45,7 @@ void Network::backpropagate(std::vector<Eigen::VectorXd> expected_outputs) {
     }
     Eigen::VectorXd delta_prev = Eigen::VectorXd::Zero(layer_size);
     for (int l=expected_outputs.size()-1; l >= 0; l--) {
-        Eigen::VectorXd delta = costfunction(
+        Eigen::VectorXd delta = costfunction_derivative(
             expected_outputs.at(l), this->layers.at(l).output);
         delta = delta + delta_prev;
         delta_prev = this->layers.at(l).compute_gradient(delta);
