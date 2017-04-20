@@ -195,19 +195,30 @@ Eigen::VectorXd get_input(char letter) {
     }
     return in;
 }
-std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> output, int end_size) {
-    int initial_size = output.back().size();
-    int lenght_network = output.size();
+std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, int end_size) {
+    int initial_size = outputs.back().size();
+    int lenght_network = outputs.size();
     std::vector<Eigen::VectorXd> real_output;
     for (int i = 0; i < lenght_network; i++) {
-        real_output.push_back(Eigen::MatrixXd::Identity(end_size, initial_size) * output.at(i));
+        real_output.push_back(Eigen::MatrixXd::Identity(end_size, initial_size) * outputs.at(i));
     }
     return(real_output);
 }
 
-std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_output) {
-    for (size_t i = 0; i < real_output.size(); i++) {
-        real_output.at(i).unaryExpr(&threshold);
+std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_outputs) {
+    for (size_t i = 0; i < real_outputs.size(); i++) {
+        real_outputs.at(i).unaryExpr(&threshold);
     }
-    return(real_output);
+    return(real_outputs);
+}
+
+int compare(std::vector<Eigen::VectorXd> real_outputs, std::vector<Eigen::VectorXd> expected_outputs) {
+    int score = 0;
+    int size = real_outputs.size();
+    for (size_t i = 0; i < size; i++) {
+        if (real_outputs.at(i).isApprox(expected_outputs.at(i))) {
+            score+=1;
+        }
+    }
+    return(score);
 }
