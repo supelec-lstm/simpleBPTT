@@ -13,6 +13,8 @@
 #include <stdexcept>
 
 double sigmoid(double x);
+double sigmoid_fast(double x);
+double sigmoid_very_fast(double x);
 double sigmoid_derivative(double x);
 double tanh_derivative(double x);
 double tanh2(double x);

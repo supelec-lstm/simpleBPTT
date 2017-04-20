@@ -12,6 +12,14 @@ double sigmoid(double x) {
     return (1/(1+exp(-x)));
 }
 
+double sigmoid_fast(double x) {
+    return (0.5 * tanh(x) + 0.5);
+}
+
+double sigmoid_very_fast(double x) {
+    return (0.5 * x/(1+std::abs(x)) + 0.5);
+}
+
 double sigmoid_derivative(double x) {
     return x*(1-x);
 }
