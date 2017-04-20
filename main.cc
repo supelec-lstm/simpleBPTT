@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     std::cout << "backpropagation complete" << '\n';
     */
     // single_cell_test();
-    single_grammar_test();
+    single_grammar_learn();
 
     return 0;
 }

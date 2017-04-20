@@ -135,6 +135,7 @@ void single_grammar_test() {
         propagation = network.propagate(inputs);
         std::cout << " - backpropagation";
         network.backpropagate(expected_outputs);
+        weights->apply_gradient(0.1);
         std::cout << " - cleaning" << '\n';
         network.reset_layers();
         inputs.clear();
@@ -221,4 +222,47 @@ int compare(std::vector<Eigen::VectorXd> real_outputs, std::vector<Eigen::Vector
         }
     }
     return(score);
+}
+
+void single_grammar_learn() {
+    int input_size = 7;
+    int output_size = 7;
+    int layer_size = 25;
+    int batch_to_learn = 500;
+    int batch_size = 1000;
+    int current_batch_size;
+
+
+    Weights* weights = new Weights(input_size, layer_size);
+    Network network = Network(weights, input_size, output_size, layer_size);
+
+    std::ifstream file("reber_test_1M.txt");
+    std::string str;
+    std::vector<Eigen::VectorXd> deltas;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+
+
+    std::cout << "===== Beginnning of Learning =====" << '\n';
+    for (size_t batch = 0; batch < batch_to_learn; batch++) {
+        std::cout << "batch no "<< batch;
+        current_batch_size = batch_size;
+        while ((std::getline(file, str)) && (0 < current_batch_size)) {
+            int lenght_word = str.length();
+            for (int i = 0; i < lenght_word-1; ++i) {
+                inputs.push_back(get_input(str.at(i)));
+                expected_outputs.push_back(get_input(str.at(i+1)));
+            }
+            propagation = network.propagate(inputs);
+            network.backpropagate(expected_outputs);
+            network.reset_layers();
+            inputs.clear();
+            expected_outputs.clear();
+            current_batch_size -= 1;
+        }
+        std::cout << " - applying gradient" << '\n';
+        weights->apply_gradient(0.1);
+        // single_grammar_evaluate();
+    }
 }

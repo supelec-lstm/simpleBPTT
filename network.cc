@@ -51,5 +51,4 @@ void Network::backpropagate(std::vector<Eigen::VectorXd> expected_outputs) {
         delta_prev = this->layers.at(l).compute_gradient(delta);
         // this->layers.at(l).compute_weight_gradient();
     }
-    this->weights->apply_gradient(0.1);
 }
