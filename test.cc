@@ -213,7 +213,9 @@ std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_o
     return(real_outputs);
 }
 
-int compare(std::vector<Eigen::VectorXd> real_outputs, std::vector<Eigen::VectorXd> expected_outputs) {
+int compare(std::vector<Eigen::VectorXd> real_outputs,
+            std::vector<Eigen::VectorXd> expected_outputs) {
+    std::cout << " == comparing ==" << '\n';
     int score = 0;
     int size = real_outputs.size();
     for (size_t i = 0; i < size; i++) {
@@ -221,22 +223,29 @@ int compare(std::vector<Eigen::VectorXd> real_outputs, std::vector<Eigen::Vector
             score+=1;
         }
     }
-    return(score);
+    std::cout << score << '\n';
+    std::cout << size << '\n';
+    // Checks if we preditected ALL the transitions
+    if (score == size) {
+        return(1);
+    } else {
+        return(0);
+    }
 }
 
 void single_grammar_learn() {
     int input_size = 7;
     int output_size = 7;
     int layer_size = 25;
-    int batch_to_learn = 500;
-    int batch_size = 1000;
+    int batch_to_learn = 1;
+    int batch_size = 100000;
     int current_batch_size;
 
 
     Weights* weights = new Weights(input_size, layer_size);
     Network network = Network(weights, input_size, output_size, layer_size);
 
-    std::ifstream file("reber_test_1M.txt");
+    std::ifstream file("reber_train_2.4M.txt");
     std::string str;
     std::vector<Eigen::VectorXd> deltas;
     std::vector<Eigen::VectorXd> inputs;
@@ -261,8 +270,34 @@ void single_grammar_learn() {
             expected_outputs.clear();
             current_batch_size -= 1;
         }
-        std::cout << " - applying gradient" << '\n';
+        std::cout << " - applying gradient";
         weights->apply_gradient(0.1);
-        // single_grammar_evaluate();
+        single_grammar_evaluate(network, 10);
     }
+}
+void single_grammar_evaluate(Network network, int words_to_test) {
+    std::ifstream file("reber_test_1M.txt");
+    std::string str;
+    std::vector<Eigen::VectorXd> deltas;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+    int score = 0;
+
+
+    std::cout << " - testing";
+    while ((std::getline(file, str)) && (0 < words_to_test)) {
+        int lenght_word = str.length();
+        for (int i = 0; i < lenght_word-1; ++i) {
+            inputs.push_back(get_input(str.at(i)));
+            expected_outputs.push_back(get_input(str.at(i+1)));
+        }
+        propagation = network.propagate(inputs);
+        network.reset_layers();
+        inputs.clear();
+        score += compare(apply_threshold(real_outputs(propagation, network.output_size)), expected_outputs);
+        expected_outputs.clear();
+        words_to_test -= 1;
+    }
+    std::cout << "score :" << score << '\n';
 }
