@@ -91,6 +91,7 @@ void single_cell_test() {
         std::cout << " - backpropagation";
         network.backpropagate(expected_outputs);
         std::cout << " - cleaning" << '\n';
+        weights->apply_gradient(0.1);
         network.reset_layers();
     }
     std::cout << "Learning Done" << '\n';
@@ -150,10 +151,6 @@ void single_grammar_test() {
     inputs.push_back(get_input('V'));
     inputs.push_back(get_input('V'));
 
-
-    std::cout << "Learning";
-    // std::cout << "Starting propagation" << std::endl;
-    std::cout << " - propagation" << '\n';
     propagation = network.propagate(inputs);
 
     std::cout << "========= On donne B ========" << std::endl;
@@ -208,23 +205,31 @@ std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, 
 
 std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_outputs) {
     for (size_t i = 0; i < real_outputs.size(); i++) {
-        real_outputs.at(i).unaryExpr(&threshold);
+        real_outputs.at(i) = real_outputs.at(i).unaryExpr(&threshold);
     }
     return(real_outputs);
 }
 
 int compare(std::vector<Eigen::VectorXd> real_outputs,
             std::vector<Eigen::VectorXd> expected_outputs) {
-    std::cout << " == comparing ==" << '\n';
     int score = 0;
+    Eigen::VectorXd diff;
     int size = real_outputs.size();
+    bool transition_predicted;
+    // for each VectorXd
     for (size_t i = 0; i < size; i++) {
-        if (real_outputs.at(i).isApprox(expected_outputs.at(i))) {
-            score+=1;
+        // We compare the state predicted and the next state
+        diff = real_outputs.at(i) - expected_outputs.at(i);
+        transition_predicted = true;
+        for (size_t j = 0; j < diff.size(); j++) {
+            // if one of the coordinates is <0 there is a transition not predicted
+            if (diff(j) < 0) {
+                transition_predicted = false;
+            }
         }
+        // If we did not found any error, we score
+        if (transition_predicted) score+=1;
     }
-    std::cout << score << '\n';
-    std::cout << size << '\n';
     // Checks if we preditected ALL the transitions
     if (score == size) {
         return(1);
@@ -237,8 +242,8 @@ void single_grammar_learn() {
     int input_size = 7;
     int output_size = 7;
     int layer_size = 25;
-    int batch_to_learn = 1;
-    int batch_size = 100000;
+    int batch_to_learn = 1000;
+    int batch_size = 10;
     int current_batch_size;
 
 
@@ -254,7 +259,7 @@ void single_grammar_learn() {
 
 
     std::cout << "===== Beginnning of Learning =====" << '\n';
-    for (size_t batch = 0; batch < batch_to_learn; batch++) {
+    for (int batch = 0; batch < batch_to_learn; batch++) {
         std::cout << "batch no "<< batch;
         current_batch_size = batch_size;
         while ((std::getline(file, str)) && (0 < current_batch_size)) {
@@ -268,11 +273,10 @@ void single_grammar_learn() {
             network.reset_layers();
             inputs.clear();
             expected_outputs.clear();
+            weights->apply_gradient(0.1);
             current_batch_size -= 1;
         }
-        std::cout << " - applying gradient";
-        weights->apply_gradient(0.1);
-        single_grammar_evaluate(network, 10);
+    single_grammar_evaluate(network, 1000);
     }
 }
 void single_grammar_evaluate(Network network, int words_to_test) {

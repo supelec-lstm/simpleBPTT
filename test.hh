@@ -25,5 +25,6 @@ std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_o
 int compare(std::vector<Eigen::VectorXd> real_outputs, std::vector<Eigen::VectorXd> expected_outputs);
 void single_grammar_learn();
 void single_grammar_evaluate(Network network, int words_to_test);
+std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, int end_size);
 
 #endif
