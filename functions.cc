@@ -7,6 +7,7 @@
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 double sigmoid(double x) {
     return (1/(1+exp(-x)));
@@ -68,4 +69,9 @@ double threshold(double x) {
     } else {
         return(0);
     }
+}
+
+std::string open_file(bool dual) {
+    if (dual) return("symmetrical_reber_train_2.4M.txt");
+    else return("reber_train_2.4M.txt");
 }

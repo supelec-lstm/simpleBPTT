@@ -11,6 +11,7 @@
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 double sigmoid(double x);
 double sigmoid_fast(double x);
@@ -23,4 +24,5 @@ Eigen::VectorXd costfunction(Eigen::VectorXd expected_output, Eigen::VectorXd ou
 Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output);
 double threshold(double x);
+std::string open_file(bool dual);
 #endif
