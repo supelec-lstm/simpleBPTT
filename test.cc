@@ -246,6 +246,11 @@ void grammar_learn(bool dual) {
     int batch_size = 10;
     int current_batch_size;
     int offset;
+
+    // time seed
+    srand(time(NULL));
+
+    // random offset in data set
     offset = rand() % 100000;
 
     Weights* weights = new Weights(input_size, layer_size);
@@ -257,11 +262,6 @@ void grammar_learn(bool dual) {
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
-
-    for (int i = 0; i < offset; i++) {
-        std::getline(file, str);
-    }
-
 
     // std::cout << "===== Beginnning of Learning =====" << '\n';
     for (int batch = 0; batch < batch_to_learn; batch++) {
@@ -300,6 +300,10 @@ void single_grammar_evaluate(Network network, int words_to_test) {
 
     // We add an offset
     int offset;
+
+    // time seed
+    srand(time(NULL));
+
     offset = rand() % 10000;  // between 0 and 9999
     for (int i = 0; i < offset; i++) {
         std::getline(file, str);  // dirty way of skipping lines
@@ -331,6 +335,18 @@ void double_grammar_evaluate(Network network, int words_to_test) {
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
+
+    // We add an offset
+    int offset;
+
+    // time seed
+    srand(time(NULL));
+
+    offset = rand() % 10000;  // between 0 and 9999
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
+
     int score = 0;
     while ((std::getline(file, str)) && (0 < words_to_test)) {
         int lenght_word = str.length();
