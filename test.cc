@@ -339,7 +339,6 @@ void single_grammar_evaluate(Network network, int words_to_test) {
         std::getline(file, str);  // dirty way of skipping lines
     }
 
-    std::cout << ",";
     while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
         int lenght_word = str.length();
         for (int i = 0; i < lenght_word-1; ++i) {
@@ -355,8 +354,7 @@ void single_grammar_evaluate(Network network, int words_to_test) {
         remaining_words_to_test -= 1;
     }
     float score_percent = (float) 100 * score / words_to_test;
-    // std::cout << "score :" << score << '\n';
-    std::cout << score_percent << '\n';
+    std::cout << "," <<score_percent << '\n';
 }
 
 void double_grammar_evaluate(Network network, int words_to_test) {
@@ -367,6 +365,8 @@ void double_grammar_evaluate(Network network, int words_to_test) {
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
+
+    int remaining_words_to_test = words_to_test;
 
     // We add an offset
     int offset;
@@ -382,7 +382,7 @@ void double_grammar_evaluate(Network network, int words_to_test) {
     int score = 0;
 
     // While we have words to test
-    while ((std::getline(file, str)) && (0 < words_to_test)) {
+    while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
         int lenght_word = str.length();
         // We read each letter
         for (int i = 0; i < lenght_word-1; ++i) {
@@ -399,9 +399,11 @@ void double_grammar_evaluate(Network network, int words_to_test) {
         score += compare_double(apply_threshold(real_outputs(propagation, network.output_size)),
                                 expected_outputs);
         expected_outputs.clear();
-        words_to_test -= 1;
+        remaining_words_to_test -= 1;
     }
-    std::cout << " - score :" << score << '\n';
+
+    float score_percent = (float) 100 * score / words_to_test;
+    std::cout << "," << score_percent << '\n';
 }
 
 int compare_double(std::vector<Eigen::VectorXd> real_outputs,
