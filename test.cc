@@ -5,7 +5,7 @@
 //
 
 #include <stdlib.h>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -217,11 +217,11 @@ int compare(std::vector<Eigen::VectorXd> real_outputs,
     int size = real_outputs.size();
     bool transition_predicted;
     // for each VectorXd
-    for (size_t i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         // We compare the state predicted and the next state
         diff = real_outputs.at(i) - expected_outputs.at(i);
         transition_predicted = true;
-        for (size_t j = 0; j < diff.size(); j++) {
+        for (int j = 0; j < diff.size(); j++) {
             // if one of the coordinates is <0 there is a transition not predicted
             if (diff(j) < 0) {
                 transition_predicted = false;
@@ -258,9 +258,10 @@ void grammar_learn(bool dual) {
     std::vector<Eigen::VectorXd> expected_outputs;
 
 
-    std::cout << "===== Beginnning of Learning =====" << '\n';
+    //std::cout << "===== Beginnning of Learning =====" << '\n';
     for (int batch = 0; batch < batch_to_learn; batch++) {
-        std::cout << "batch no "<< batch;
+        //std::cout << "batch no"<< batch;
+        std::cout << batch;
         current_batch_size = batch_size;
         while ((std::getline(file, str)) && (0 < current_batch_size)) {
             int lenght_word = str.length();
@@ -290,10 +291,11 @@ void single_grammar_evaluate(Network network, int words_to_test) {
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
     int score = 0;
+    int remaining_words_to_test = words_to_test;
 
 
-    std::cout << " - testing";
-    while ((std::getline(file, str)) && (0 < words_to_test)) {
+    std::cout << ",";
+    while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
         int lenght_word = str.length();
         for (int i = 0; i < lenght_word-1; ++i) {
             inputs.push_back(get_input(str.at(i)));
@@ -305,9 +307,11 @@ void single_grammar_evaluate(Network network, int words_to_test) {
         score += compare(apply_threshold(real_outputs(propagation, network.output_size)),
                          expected_outputs);
         expected_outputs.clear();
-        words_to_test -= 1;
+        remaining_words_to_test -= 1;
     }
-    std::cout << "score :" << score << '\n';
+    float score_percent = (float) 100 * score / words_to_test;
+    //std::cout << "score :" << score << '\n';
+    std::cout << score_percent << '\n';
 }
 
 void double_grammar_evaluate(Network network, int words_to_test) {
