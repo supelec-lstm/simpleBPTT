@@ -193,6 +193,36 @@ Eigen::VectorXd get_input(char letter) {
     }
     return in;
 }
+
+char get_character(Eigen::VectorXd vector) {
+    Eigen::VectorXd B(7);
+    B << 1, 0, 0, 0, 0, 0, 0;
+    Eigen::VectorXd T(7);
+    T << 0, 1, 0, 0, 0, 0, 0;
+    Eigen::VectorXd P(7);
+    P << 0, 0, 1, 0, 0, 0, 0;
+    Eigen::VectorXd S(7);
+    S << 0, 0, 0, 1, 0, 0, 0;
+    Eigen::VectorXd X(7);
+    X << 0, 0, 0, 0, 1, 0, 0;
+    Eigen::VectorXd V(7);
+    V << 0, 0, 0, 0, 0, 1, 0;
+    Eigen::VectorXd E(7);
+    E << 0, 0, 0, 0, 0, 0, 1;
+
+    char letter;
+
+    if (vector == B) letter = 'B';
+    else if (vector == T) letter = 'T';
+    else if (vector == P) letter = 'P';
+    else if (vector == S) letter = 'S';
+    else if (vector == X) letter = 'X';
+    else if (vector == V) letter = 'V';
+    else if (vector == E) letter = 'E';
+    else letter='*';
+    return letter;
+}
+
 std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, int end_size) {
     int initial_size = outputs.back().size();
     int lenght_network = outputs.size();
@@ -283,7 +313,7 @@ void grammar_learn(bool dual) {
             current_batch_size -= 1;
         }
         if (dual) {
-            double_grammar_evaluate(network, 1000);
+            double_grammar_evaluate(network, 10);
         } else {
             single_grammar_evaluate(network, 1000);
         }
@@ -326,19 +356,28 @@ void single_grammar_evaluate(Network network, int words_to_test) {
 }
 
 void double_grammar_evaluate(Network network, int words_to_test) {
+    // Here we test the symmetrical reber grammar
+    // Initialisation bloc
     std::ifstream file("symmetrical_reber_test_1M.txt");
     std::string str;
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
     int score = 0;
+
+    // While we have words to test
     while ((std::getline(file, str)) && (0 < words_to_test)) {
         int lenght_word = str.length();
+        // We read each letter
         for (int i = 0; i < lenght_word-1; ++i) {
+            // We populate the inputs and outputs datasets
             inputs.push_back(get_input(str.at(i)));
             expected_outputs.push_back(get_input(str.at(i+1)));
         }
+
         propagation = network.propagate(inputs);
+
+        // We clean everything just after
         network.reset_layers();
         inputs.clear();
         score += compare_double(apply_threshold(real_outputs(propagation, network.output_size)),
@@ -357,6 +396,8 @@ int compare_double(std::vector<Eigen::VectorXd> real_outputs,
     bool transition_predicted;
 
     // We compare the last state predicted and the first transition
+    std::cout << "real - expected" << '\n';
+    std::cout << get_character(real_outputs.at(size-2)) << " - " << get_character(expected_outputs.at(size-2)) << '\n';
     diff = real_outputs.at(size-2) - expected_outputs.at(size-2);
     transition_predicted = true;
     for (size_t j = 0; j < diff.size(); j++) {
