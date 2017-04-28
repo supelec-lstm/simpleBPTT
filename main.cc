@@ -96,6 +96,6 @@ int main(int argc, char **argv) {
     // single_cell_test();
     // single_grammar_test();
     // single_grammar_learn();
-    grammar_learn(true);
+    grammar_learn(false);
     return 0;
 }

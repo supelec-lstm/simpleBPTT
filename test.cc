@@ -241,11 +241,12 @@ int compare(std::vector<Eigen::VectorXd> real_outputs,
 void grammar_learn(bool dual) {
     int input_size = 7;
     int output_size = 7;
-    int layer_size = 100;
+    int layer_size = 30;
     int batch_to_learn = 10000;
     int batch_size = 10;
     int current_batch_size;
-
+    int offset;
+    offset = rand() % 100000;
 
     Weights* weights = new Weights(input_size, layer_size);
     Network network = Network(weights, input_size, output_size, layer_size);
@@ -257,10 +258,14 @@ void grammar_learn(bool dual) {
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
 
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);
+    }
 
-    //std::cout << "===== Beginnning of Learning =====" << '\n';
+
+    // std::cout << "===== Beginnning of Learning =====" << '\n';
     for (int batch = 0; batch < batch_to_learn; batch++) {
-        //std::cout << "batch no"<< batch;
+        // std::cout << "batch no"<< batch;
         std::cout << batch;
         current_batch_size = batch_size;
         while ((std::getline(file, str)) && (0 < current_batch_size)) {
@@ -274,7 +279,7 @@ void grammar_learn(bool dual) {
             network.reset_layers();
             inputs.clear();
             expected_outputs.clear();
-            weights->apply_gradient(0.3);
+            weights->apply_gradient(0.1);
             current_batch_size -= 1;
         }
         if (dual) {
@@ -293,6 +298,12 @@ void single_grammar_evaluate(Network network, int words_to_test) {
     int score = 0;
     int remaining_words_to_test = words_to_test;
 
+    // We add an offset
+    int offset;
+    offset = rand() % 10000;  // between 0 and 9999
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
 
     std::cout << ",";
     while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
@@ -310,7 +321,7 @@ void single_grammar_evaluate(Network network, int words_to_test) {
         remaining_words_to_test -= 1;
     }
     float score_percent = (float) 100 * score / words_to_test;
-    //std::cout << "score :" << score << '\n';
+    // std::cout << "score :" << score << '\n';
     std::cout << score_percent << '\n';
 }
 
