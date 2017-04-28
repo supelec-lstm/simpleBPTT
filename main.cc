@@ -69,9 +69,33 @@ int main(int argc, char **argv) {
     network.backpropagate(expected_outputs);
     std::cout << "backpropagation complete" << '\n';
     */
+    /*
+    Eigen::VectorXd v1(20);
+    v1 << 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0;
+    Eigen::VectorXd v2(20);
+    v2 << 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1;
+
+    std::vector<Eigen::VectorXd> va;
+    std::vector<Eigen::VectorXd> vb;
+
+    va.push_back(v1);
+    va.push_back(v1);
+    va.push_back(v2);
+    va.push_back(v1);
+
+    vb.push_back(v2);
+    vb.push_back(v2);
+    vb.push_back(v2);
+    vb.push_back(v2);
+
+    std::cout << "va,va" << '\n';
+    std::cout << compare_double(va, va) << '\n';
+    std::cout << "va,vb" << '\n';
+    std::cout << compare_double(va, vb) << '\n';
+    */
     // single_cell_test();
     // single_grammar_test();
-    single_grammar_learn();
-
+    // single_grammar_learn();
+    grammar_learn(true);
     return 0;
 }

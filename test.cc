@@ -238,11 +238,11 @@ int compare(std::vector<Eigen::VectorXd> real_outputs,
     }
 }
 
-void single_grammar_learn() {
+void grammar_learn(bool dual) {
     int input_size = 7;
     int output_size = 7;
-    int layer_size = 25;
-    int batch_to_learn = 1000;
+    int layer_size = 100;
+    int batch_to_learn = 10000;
     int batch_size = 10;
     int current_batch_size;
 
@@ -250,7 +250,7 @@ void single_grammar_learn() {
     Weights* weights = new Weights(input_size, layer_size);
     Network network = Network(weights, input_size, output_size, layer_size);
 
-    std::ifstream file("reber_train_2.4M.txt");
+    std::ifstream file(open_file(dual));
     std::string str;
     std::vector<Eigen::VectorXd> deltas;
     std::vector<Eigen::VectorXd> inputs;
@@ -273,16 +273,19 @@ void single_grammar_learn() {
             network.reset_layers();
             inputs.clear();
             expected_outputs.clear();
-            weights->apply_gradient(0.1);
+            weights->apply_gradient(0.3);
             current_batch_size -= 1;
         }
-    single_grammar_evaluate(network, 1000);
+        if (dual) {
+            double_grammar_evaluate(network, 1000);
+        } else {
+            single_grammar_evaluate(network, 1000);
+        }
     }
 }
 void single_grammar_evaluate(Network network, int words_to_test) {
     std::ifstream file("reber_test_1M.txt");
     std::string str;
-    std::vector<Eigen::VectorXd> deltas;
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
@@ -299,9 +302,55 @@ void single_grammar_evaluate(Network network, int words_to_test) {
         propagation = network.propagate(inputs);
         network.reset_layers();
         inputs.clear();
-        score += compare(apply_threshold(real_outputs(propagation, network.output_size)), expected_outputs);
+        score += compare(apply_threshold(real_outputs(propagation, network.output_size)),
+                         expected_outputs);
         expected_outputs.clear();
         words_to_test -= 1;
     }
     std::cout << "score :" << score << '\n';
+}
+
+void double_grammar_evaluate(Network network, int words_to_test) {
+    std::ifstream file("symmetrical_reber_test_1M.txt");
+    std::string str;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+    int score = 0;
+    while ((std::getline(file, str)) && (0 < words_to_test)) {
+        int lenght_word = str.length();
+        for (int i = 0; i < lenght_word-1; ++i) {
+            inputs.push_back(get_input(str.at(i)));
+            expected_outputs.push_back(get_input(str.at(i+1)));
+        }
+        propagation = network.propagate(inputs);
+        network.reset_layers();
+        inputs.clear();
+        score += compare_double(apply_threshold(real_outputs(propagation, network.output_size)),
+                                expected_outputs);
+        expected_outputs.clear();
+        words_to_test -= 1;
+    }
+    std::cout << " - score :" << score << '\n';
+}
+
+int compare_double(std::vector<Eigen::VectorXd> real_outputs,
+                   std::vector<Eigen::VectorXd> expected_outputs) {
+    int score = 0;
+    Eigen::VectorXd diff;
+    int size = real_outputs.size();
+    bool transition_predicted;
+
+    // We compare the last state predicted and the first transition
+    diff = real_outputs.at(size-2) - expected_outputs.at(size-2);
+    transition_predicted = true;
+    for (size_t j = 0; j < diff.size(); j++) {
+        // if one of the coordinates is <0 there is a transition not predicted
+        if (std::abs(diff(j)) > 0.1) {
+            transition_predicted = false;
+        }
+    }
+        // If we did not found any error, we score
+    if (transition_predicted) score=1;
+    return(score);
 }
