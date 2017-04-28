@@ -313,7 +313,7 @@ void grammar_learn(bool dual) {
             current_batch_size -= 1;
         }
         if (dual) {
-            double_grammar_evaluate(network, 10);
+            double_grammar_evaluate(network, 1000);
         } else {
             single_grammar_evaluate(network, 1000);
         }
@@ -412,8 +412,8 @@ int compare_double(std::vector<Eigen::VectorXd> real_outputs,
     bool transition_predicted;
 
     // We compare the last state predicted and the first transition
-    std::cout << "real - expected" << '\n';
-    std::cout << get_character(real_outputs.at(size-2)) << " - " << get_character(expected_outputs.at(size-2)) << '\n';
+    // std::cout << "real - expected" << '\n';
+    // std::cout << get_character(real_outputs.at(size-2)) << " - " << get_character(expected_outputs.at(size-2)) << '\n';
     diff = real_outputs.at(size-2) - expected_outputs.at(size-2);
     transition_predicted = true;
     for (size_t j = 0; j < diff.size(); j++) {
