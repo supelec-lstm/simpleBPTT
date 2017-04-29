@@ -31,7 +31,7 @@ class Cell {
     // compute() returns [cell_out, cell_state]
     std::vector<Eigen::VectorXd> compute(
         Eigen::VectorXd previous_output,
-        Eigen::VectorXd *previous_memory,
+        Eigen::VectorXd previous_memory,
         Eigen::VectorXd input);
     // compute_gradient() returns [delta_input, delta_cell_state]
     std::vector<Eigen::VectorXd> compute_gradient(Eigen::VectorXd* deltas,
