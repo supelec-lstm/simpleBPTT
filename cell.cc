@@ -57,8 +57,8 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
     return result;
 }
 
-std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd* deltas,
-    Eigen::VectorXd* previous_delta_cell_in,
-    Eigen::VectorXd* previous_delta_cell_state) {
+std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
+    Eigen::VectorXd previous_delta_cell_in,
+    Eigen::VectorXd previous_delta_cell_state) {
     // TODO : returns [delta_input, delta_cell_state]
 }
