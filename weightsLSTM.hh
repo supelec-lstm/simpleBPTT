@@ -8,7 +8,7 @@
 #define WEIGHTSLSTM_HH
 
 #include <stdlib.h>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <string>
 #include <sstream>
 #include <iostream>
