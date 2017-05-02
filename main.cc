@@ -14,10 +14,15 @@
 #include "functions.hh"
 #include "iostream"
 #include "test.hh"
+#include "weightsLSTM.hh"
+#include "cell.hh"
 
 
 int main(int argc, char **argv) {
     /*
+    //
+    // TESTS LAYER & PROPAGATION
+    //
     int input_size = 5;
     int output_size = 20;
     Weights* weights = new Weights(input_size, output_size);
@@ -70,6 +75,9 @@ int main(int argc, char **argv) {
     std::cout << "backpropagation complete" << '\n';
     */
     /*
+    //
+    // TESTS COMPARE
+    //
     Eigen::VectorXd v1(20);
     v1 << 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0;
     Eigen::VectorXd v2(20);
@@ -93,9 +101,36 @@ int main(int argc, char **argv) {
     std::cout << "va,vb" << '\n';
     std::cout << compare_double(va, vb) << '\n';
     */
+
+    /*
+    //
+    // TESTS LSTM
+    //
+    WeightsLSTM* weightsLSTM = new WeightsLSTM(7, 10);
+    Cell* cell = new Cell(weightsLSTM);
+    Eigen::VectorXd previous_memory = Eigen::VectorXd::Zero(10);
+    Eigen::VectorXd previous_output = Eigen::VectorXd::Zero(10);
+    Eigen::VectorXd input(7);
+    input << 1, 0, 1, 0, 1, 0, 1;
+    std::vector<Eigen::VectorXd> result = cell->compute(previous_output, previous_memory, input);
+    std::cout << "===== Cell_out =====" << '\n';
+    std::cout << result.at(0) << '\n';
+    std::cout << "===== Cell state =====" << '\n';
+    std::cout << result.at(1) << '\n';
+    std::vector<Eigen::VectorXd> result2 = cell->compute(result.at(0), result.at(1), input);
+    Eigen::VectorXd deltas(10);
+    Eigen::VectorXd previous_delta_cell_in(10);
+    Eigen::VectorXd previous_delta_cell_state(10);
+    std::vector<Eigen::VectorXd> grad = cell->compute_gradient(deltas, previous_delta_cell_in,
+        previous_delta_cell_state);
+    std::cout << "===== delta_input ======" << '\n';
+    std::cout << grad.at(0) << '\n';
+    std::cout << "====== delta_cell_state ======" << '\n';
+    std::cout << grad.at(1) << '\n';
+    */
     // single_cell_test();
     // single_grammar_test();
     // single_grammar_learn();
-    grammar_learn(true);
+    // grammar_learn(true);
     return 0;
 }
