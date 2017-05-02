@@ -1,4 +1,4 @@
-OBJS = main.cc layer.o weights.o network.o functions.o test.o cell.o weightsLSTM.o
+OBJS = main.cc layer.o weights.o network.o functions.o test.o cell.o weightsLSTM.o networkLSTM.o
 CC = clang++
 CFLAGS = -std=c++11 -Ofast -c
 LFLAGS = -std=c++11 -Ofast
@@ -26,3 +26,6 @@ cell.o : cell.hh cell.cc weightsLSTM.hh functions.hh
 
 weightsLSTM.o : weightsLSTM.hh weightsLSTM.cc functions.hh
 	$(CC) $(CFLAGS) weightsLSTM.cc -o weightsLSTM.o
+
+networkLSTM.o : networkLSTM.cc networkLSTM.hh cell.hh functions.hh weightsLSTM.hh
+	$(CC) $(CFLAGS) networkLSTM.cc -o networkLSTM.o
