@@ -40,10 +40,17 @@ double tanhyp(double x) {
 
 Eigen::VectorXd costfunction(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output) {
+    // We have two cases :
+    // The layer size is the output size
     if (expected_output.size() == output.size()) {
+        // in this case, everything is ok, just return the cost
         return((expected_output-output).cwiseProduct(expected_output-output));
+    // If not, we have to make a little hack
     } else {
         int layer_size = output.size();
+        // We truncate the output
+        // We compute the cost function
+        // We come back to the original size
         return(Eigen::MatrixXd::Identity(layer_size, expected_output.size())
         * (((Eigen::MatrixXd::Identity(expected_output.size(), layer_size)
         * output)-expected_output).array().pow(2).matrix()));
@@ -52,10 +59,17 @@ Eigen::VectorXd costfunction(Eigen::VectorXd expected_output,
 
 Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output) {
+    // We have two cases
+    // The layer size is the output size
     if (expected_output.size() == output.size()) {
+        // in this case, everything is ok, just return the cost derivative
         return((expected_output-output).cwiseProduct(expected_output-output));
+    // If not, we have to make a little hack
     } else {
         int layer_size = output.size();
+        // We truncate the output
+        // We compute the costfunction derivative
+        // We come back to the original size
         return(- Eigen::MatrixXd::Identity(layer_size, expected_output.size())
         * (((Eigen::MatrixXd::Identity(expected_output.size(), layer_size)
         * output)-expected_output)));

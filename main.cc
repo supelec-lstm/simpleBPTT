@@ -15,6 +15,7 @@
 #include "iostream"
 #include "test.hh"
 #include "weightsLSTM.hh"
+#include "networkLSTM.hh"
 #include "cell.hh"
 
 
@@ -104,7 +105,7 @@ int main(int argc, char **argv) {
 
     /*
     //
-    // TESTS LSTM
+    // TESTS LSTM CELL
     //
     WeightsLSTM* weightsLSTM = new WeightsLSTM(7, 10);
     Cell* cell = new Cell(weightsLSTM);
@@ -127,6 +128,25 @@ int main(int argc, char **argv) {
     std::cout << grad.at(0) << '\n';
     std::cout << "====== delta_cell_state ======" << '\n';
     std::cout << grad.at(1) << '\n';
+    */
+
+    //
+    // TESTS LSTM NETWORK
+    //
+    /*
+    WeightsLSTM* weightsLSTM = new WeightsLSTM(7, 10);
+    NetworkLSTM* networkLSTM = new NetworkLSTM(weightsLSTM, 7, 5, 10);
+    Eigen::VectorXd input(7);
+    input << 1, 0, 1, 0, 1, 0, 1;
+    std::vector<Eigen::VectorXd> inputs;
+    inputs.push_back(input);
+    inputs.push_back(input);
+    std::vector<Eigen::VectorXd> propagation = networkLSTM->propagate(inputs);
+    std::cout << "Propagation complete" << '\n';
+    std::cout << "propagate[0]" << '\n';
+    std::cout << propagation.at(0) << '\n';
+    std::cout << "propagate[1]" << '\n';
+    std::cout << propagation.at(1) << '\n';
     */
     // single_cell_test();
     // single_grammar_test();
