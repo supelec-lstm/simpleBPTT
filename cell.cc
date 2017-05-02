@@ -18,7 +18,6 @@ Cell::Cell(WeightsLSTM* weights) {
 std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
                                            Eigen::VectorXd previous_cell_state,
                                            Eigen::VectorXd input) {
-
     // We keep those values for later
     this->input = input;
     this->previous_output = previous_output;
@@ -51,7 +50,7 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
         this->cell_state.unaryExpr(&tanhyp).cwiseProduct(this->output_gate_out);
 
     // Craft the result to return [cell_out, cell_state]
-    std::vector<Eigen::MatrixXd> result;
+    std::vector<Eigen::VectorXd> result;
     result.push_back(cell_out);
     result.push_back(cell_state);
     return result;
@@ -98,7 +97,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
         delta_input_gate * this->previous_output.transpose();
 
     // Computes dz
-        Eigen::MatrixXd delta_input_block =
+        Eigen::VectorXd delta_input_block =
             delta_cell_state.cwiseProduct(this->input_gate_out).cwiseProduct(
               Eigen::VectorXd::Ones(this->weights->output_size)
               - this->input_block_out.array().pow(2).matrix());  // CHECKED
@@ -110,7 +109,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     delta_input_block * this->previous_output.transpose();
 
     // Computes the previous output gradient
-    Eigen::MatrixXd delta_previous_output =
+    Eigen::VectorXd delta_previous_output =
         this->weights->W_prev_input_block.transpose() * delta_input_block +
         this->weights->W_prev_input_gate.transpose() * delta_input_gate +
         // this->weights->weight_in_forget_gate * delta_forget_gate +
@@ -118,7 +117,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
 
 
     // Crafting the result [delta_input, delta_cell_state]
-    std::vector<Eigen::MatrixXd> result;
+    std::vector<Eigen::VectorXd> result;
     result.push_back(delta_previous_output);
     result.push_back(delta_cell_state);
     return result;
