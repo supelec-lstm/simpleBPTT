@@ -1,0 +1,3 @@
+[submodule "reber-datasets"]
+	path = reber-datasets
+	url = https://github.com/supelec-lstm/reber-datasets.git
