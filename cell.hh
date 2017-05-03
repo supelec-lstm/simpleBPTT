@@ -23,11 +23,11 @@ class Cell {
     Eigen::VectorXd input_block_out;
     Eigen::VectorXd output_gate_out;
     Eigen::VectorXd cell_state;
-    Eigen::VectorXd cell_out;
 
 
  public:
     explicit Cell(WeightsLSTM* weights);
+    Eigen::VectorXd cell_out;
     // compute() returns [cell_out, cell_state]
     std::vector<Eigen::VectorXd> compute(
         Eigen::VectorXd previous_output,
