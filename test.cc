@@ -20,156 +20,9 @@
 #include "lstmCell/weightsLSTM.hh"
 #include "lstmCell/networkLSTM.hh"
 
-void single_cell_test() {
-    int input_size = 26;
-    int output_size = 26;
-    int layer_size = 40;
+// Auxiliary functions needed to test
 
-    std::cout << "creating weights" << '\n';
-
-    Weights* weights = new Weights(input_size, layer_size);
-
-    std::vector<Eigen::VectorXd> inputs;
-
-    Eigen::VectorXd inputS(input_size);
-    inputS << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-    0, 0, 0, 0, 0, 0;
-
-    Eigen::VectorXd inputH(input_size);
-    inputH << 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0;
-
-    Eigen::VectorXd inputA(input_size);
-    inputA << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0;
-
-    Eigen::VectorXd inputK(input_size);
-    inputK << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0;
-
-    inputs.push_back(inputS);
-    inputs.push_back(inputH);
-    inputs.push_back(inputA);
-    inputs.push_back(inputK);
-    inputs.push_back(inputA);
-    inputs.push_back(inputS);
-    inputs.push_back(inputH);
-    inputs.push_back(inputA);
-    inputs.push_back(inputK);
-    inputs.push_back(inputA);
-    inputs.push_back(inputS);
-    inputs.push_back(inputH);
-    inputs.push_back(inputA);
-    inputs.push_back(inputK);
-    inputs.push_back(inputA);
-
-    std::vector<Eigen::VectorXd> expected_outputs;
-    expected_outputs.push_back(inputH);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputK);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputS);
-    expected_outputs.push_back(inputH);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputK);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputS);
-    expected_outputs.push_back(inputH);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputK);
-    expected_outputs.push_back(inputA);
-    expected_outputs.push_back(inputS);
-
-
-    Network network = Network(weights, input_size, output_size, layer_size);
-
-    std::cout << "Starting learning" << '\n';
-
-    std::vector<Eigen::VectorXd> propagation;
-
-    for (int j=0; j < 1000; j++) {
-        std::cout << "Learning no : " << j;
-        // std::cout << "Starting propagation" << std::endl;
-        std::cout << " - propagation";
-        propagation = network.propagate(inputs);
-        std::cout << " - backpropagation";
-        network.backpropagate(expected_outputs);
-        std::cout << " - cleaning" << '\n';
-        weights->apply_gradient(0.1);
-        network.reset_layers();
-    }
-    std::cout << "Learning Done" << '\n';
-    propagation = network.propagate(inputs);
-    std::cout << propagation.at(0) << '\n';
-    std::cout << "===================" << '\n';
-    std::cout << propagation.at(1) << '\n';
-    std::cout << "===================" << '\n';
-    std::cout << propagation.at(2) << '\n';
-    std::cout << "===================" << '\n';
-    std::cout << propagation.at(3) << '\n';
-    std::cout << "===================" << '\n';
-}
-
-void single_grammar_test() {
-    int input_size = 7;
-    int output_size = 7;
-    int layer_size = 25;
-    int words_to_learn = 50000;
-
-    Weights* weights = new Weights(input_size, layer_size);
-    Network network = Network(weights, input_size, output_size, layer_size);
-
-    std::ifstream file("reber_test_1M.txt");
-    std::string str;
-    std::vector<Eigen::VectorXd> deltas;
-    std::vector<Eigen::VectorXd> inputs;
-    std::vector<Eigen::VectorXd> propagation;
-    std::vector<Eigen::VectorXd> expected_outputs;
-
-
-    std::cout << "===== Beginnning of Learning =====" << '\n';
-    while ((std::getline(file, str)) && (0 < words_to_learn)) {
-        int lenght_word = str.length();
-        for (int i = 0; i < lenght_word-1; ++i) {
-            inputs.push_back(get_input(str.at(i)));
-            expected_outputs.push_back(get_input(str.at(i+1)));
-        }
-
-        std::cout << "Words remaining " << words_to_learn;
-        std::cout << " - propagation";
-        propagation = network.propagate(inputs);
-        std::cout << " - backpropagation";
-        network.backpropagate(expected_outputs);
-        weights->apply_gradient(0.1);
-        std::cout << " - cleaning" << '\n';
-        network.reset_layers();
-        inputs.clear();
-        expected_outputs.clear();
-        words_to_learn -= 1;
-    }
-    std::cout << "===== End of Learning =====" << '\n';
-    std::cout << "===== Testing =====" << '\n';
-
-    inputs.push_back(get_input('B'));
-    inputs.push_back(get_input('P'));
-    inputs.push_back(get_input('V'));
-    inputs.push_back(get_input('V'));
-
-    propagation = network.propagate(inputs);
-
-    std::cout << "========= On donne B ========" << std::endl;
-    std::cout << propagation.at(0) << '\n';
-
-    std::cout << "========= On donne P ========" << std::endl;
-    std::cout << propagation.at(1) << '\n';
-
-    std::cout << "========= On donne V ========" << std::endl;
-    std::cout << propagation.at(2) << '\n';
-
-    std::cout << "========= On donne V ========" << std::endl;
-    std::cout << propagation.at(3) << '\n';
-}
-
+// Convert a letter into a legitimate input
 Eigen::VectorXd get_input(char letter) {
     Eigen::VectorXd in(7);
     switch (letter) {
@@ -198,6 +51,7 @@ Eigen::VectorXd get_input(char letter) {
     return in;
 }
 
+// Convert an output filtered into a letter (useful to debug)
 char get_character(Eigen::VectorXd vector) {
     Eigen::VectorXd B(7);
     B << 1, 0, 0, 0, 0, 0, 0;
@@ -223,10 +77,11 @@ char get_character(Eigen::VectorXd vector) {
     else if (vector == X) letter = 'X';
     else if (vector == V) letter = 'V';
     else if (vector == E) letter = 'E';
-    else letter='*';
+    else letter = '*';
     return letter;
 }
 
+// Truncate the output (originally layer_size) to output_size
 std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, int end_size) {
     int initial_size = outputs.back().size();
     int lenght_network = outputs.size();
@@ -237,6 +92,7 @@ std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, 
     return(real_output);
 }
 
+// Apply a threshold : if value > 0.3 then value =1, else value = 0
 std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_outputs) {
     for (size_t i = 0; i < real_outputs.size(); i++) {
         real_outputs.at(i) = real_outputs.at(i).unaryExpr(&threshold);
@@ -244,6 +100,8 @@ std::vector<Eigen::VectorXd> apply_threshold(std::vector<Eigen::VectorXd> real_o
     return(real_outputs);
 }
 
+// Used to evaluate the preditcted transitions by the network and the expected transition
+// Simple reber grammar
 int compare(std::vector<Eigen::VectorXd> real_outputs,
             std::vector<Eigen::VectorXd> expected_outputs) {
     int score = 0;
@@ -272,7 +130,30 @@ int compare(std::vector<Eigen::VectorXd> real_outputs,
     }
 }
 
-void grammar_learn(bool dual) {
+// Same thing for the double reber grammar
+int compare_double(std::vector<Eigen::VectorXd> real_outputs,
+                   std::vector<Eigen::VectorXd> expected_outputs) {
+    int score = 0;
+    Eigen::VectorXd diff;
+    int size = real_outputs.size();
+    bool transition_predicted;
+
+    // We compare the last state predicted and the first transition
+    diff = real_outputs.at(size-2) - expected_outputs.at(size-2);
+    transition_predicted = true;
+    for (size_t j = 0; j < diff.size(); j++) {
+        // if one of the coordinates is <0 there is a transition not predicted
+        if (std::abs(diff(j)) > 0.1) {
+            transition_predicted = false;
+        }
+    }
+        // If we did not found any error, we score
+    if (transition_predicted) score=1;
+    return(score);
+}
+
+// Learn a grammar
+void grammar_learn(bool symmetrical, bool lstm) {
     int input_size = 7;
     int output_size = 7;
     int layer_size = 30;
@@ -290,7 +171,7 @@ void grammar_learn(bool dual) {
     Weights* weights = new Weights(input_size, layer_size);
     Network network = Network(weights, input_size, output_size, layer_size);
 
-    std::ifstream file(open_file(dual));
+    std::ifstream file(open_file(symmetrical));
     std::string str;
     std::vector<Eigen::VectorXd> deltas;
     std::vector<Eigen::VectorXd> inputs;
@@ -316,7 +197,7 @@ void grammar_learn(bool dual) {
             weights->apply_gradient(0.1);
             current_batch_size -= 1;
         }
-        if (dual) {
+        if (symmetrical) {
             double_grammar_evaluate(network, 1000);
         } else {
             single_grammar_evaluate(network, 1000);
@@ -408,27 +289,4 @@ void double_grammar_evaluate(Network network, int words_to_test) {
 
     float score_percent = (float) 100 * score / words_to_test;
     std::cout << "," << score_percent << '\n';
-}
-
-int compare_double(std::vector<Eigen::VectorXd> real_outputs,
-                   std::vector<Eigen::VectorXd> expected_outputs) {
-    int score = 0;
-    Eigen::VectorXd diff;
-    int size = real_outputs.size();
-    bool transition_predicted;
-
-    // We compare the last state predicted and the first transition
-    // std::cout << "real - expected" << '\n';
-    // std::cout << get_character(real_outputs.at(size-2)) << " - " << get_character(expected_outputs.at(size-2)) << '\n';
-    diff = real_outputs.at(size-2) - expected_outputs.at(size-2);
-    transition_predicted = true;
-    for (size_t j = 0; j < diff.size(); j++) {
-        // if one of the coordinates is <0 there is a transition not predicted
-        if (std::abs(diff(j)) > 0.1) {
-            transition_predicted = false;
-        }
-    }
-        // If we did not found any error, we score
-    if (transition_predicted) score=1;
-    return(score);
 }

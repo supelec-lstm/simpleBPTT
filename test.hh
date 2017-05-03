@@ -29,7 +29,7 @@ int compare(std::vector<Eigen::VectorXd> real_outputs,
 int compare_double(std::vector<Eigen::VectorXd> propagation,
                    std::vector<Eigen::VectorXd> expected_outputs);
 
-void grammar_learn(bool dual);
+void grammar_learn(bool symmetrical, bool lstm);
 
 void single_grammar_evaluate(Network network, int words_to_test);
 
