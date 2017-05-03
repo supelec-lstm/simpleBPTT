@@ -14,7 +14,7 @@
 #include "./networkNeuron.hh"
 #include "../functions.hh"
 
-Network::Network(Weights* weights, int input_size, int output_size,
+NetworkNeuron::NetworkNeuron(WeightsNeuron* weights, int input_size, int output_size,
                 int layer_size) {
     this->weights = weights;
     this->input_size = input_size;
@@ -27,7 +27,7 @@ Network::Network(Weights* weights, int input_size, int output_size,
     this->layer_size = layer_size;
 }
 
-std::vector<Eigen::VectorXd> Network::propagate(std::vector<Eigen::VectorXd> inputs) {
+std::vector<Eigen::VectorXd> NetworkNeuron::propagate(std::vector<Eigen::VectorXd> inputs) {
     int size_net = inputs.size();
     // We initialize a null previous output
     Eigen::VectorXd previous_output = Eigen::VectorXd::Zero(this->layer_size);
@@ -46,12 +46,12 @@ std::vector<Eigen::VectorXd> Network::propagate(std::vector<Eigen::VectorXd> inp
     return(outputs);
 }
 
-void Network::reset_layers() {
+void NetworkNeuron::reset_layers() {
     // Destroy the layers, needed before the next propagation
     this->layers.clear();
 }
 
-void Network::backpropagate(std::vector<Eigen::VectorXd> expected_outputs) {
+void NetworkNeuron::backpropagate(std::vector<Eigen::VectorXd> expected_outputs) {
     // Do we have as many expected outputs as inputs ?
     if (expected_outputs.size() != layers.size()) {
         throw std::logic_error("Layer size != expected_outputs size");

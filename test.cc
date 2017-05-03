@@ -168,8 +168,8 @@ void grammar_learn(bool symmetrical, bool lstm) {
     // random offset in data set
     offset = rand() % 100000;
 
-    Weights* weights = new Weights(input_size, layer_size);
-    Network network = Network(weights, input_size, output_size, layer_size);
+    WeightsNeuron* weights = new WeightsNeuron(input_size, layer_size);
+    NetworkNeuron network = NetworkNeuron(weights, input_size, output_size, layer_size);
 
     std::ifstream file(open_file(symmetrical));
     std::string str;
@@ -204,7 +204,7 @@ void grammar_learn(bool symmetrical, bool lstm) {
         }
     }
 }
-void single_grammar_evaluate(Network network, int words_to_test) {
+void single_grammar_evaluate(NetworkNeuron network, int words_to_test) {
     std::ifstream file("reber_test_1M.txt");
     std::string str;
     std::vector<Eigen::VectorXd> inputs;
@@ -242,7 +242,7 @@ void single_grammar_evaluate(Network network, int words_to_test) {
     std::cout << "," <<score_percent << '\n';
 }
 
-void double_grammar_evaluate(Network network, int words_to_test) {
+void double_grammar_evaluate(NetworkNeuron network, int words_to_test) {
     // Here we test the symmetrical reber grammar
     // Initialisation bloc
     std::ifstream file("symmetrical_reber_test_1M.txt");

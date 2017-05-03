@@ -10,12 +10,12 @@
 #include <eigen3/Eigen/Dense>
 #include <stdexcept>
 
-class Weights {
+class WeightsNeuron {
  public:
     int input_size;
     int output_size;
-    Weights(int input_size, int output_size);
-    ~Weights();
+    WeightsNeuron(int input_size, int output_size);
+    ~WeightsNeuron();
     void apply_gradient(double lambda);
 
 

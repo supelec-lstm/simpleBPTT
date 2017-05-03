@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include "./weightsNeuron.hh"
 
-Weights::Weights(int input_size, int output_size) {
+WeightsNeuron::WeightsNeuron(int input_size, int output_size) {
     this->input_size = input_size;
     this->output_size = output_size;
 
@@ -38,7 +38,7 @@ Weights::Weights(int input_size, int output_size) {
     this->delta_bias = Eigen::MatrixXd::Zero(this->output_size, 1);
 }
 
-void Weights::apply_gradient(double lambda) {
+void WeightsNeuron::apply_gradient(double lambda) {
 // We apply the weight variations
     this->weight_input =
         this->weight_input

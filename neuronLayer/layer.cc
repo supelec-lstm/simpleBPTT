@@ -12,7 +12,7 @@
 #include "../functions.hh"
 // #include "functions.hh"
 
-Layer::Layer(Weights* weights) {
+Layer::Layer(WeightsNeuron* weights) {
     this->weights = weights;
 }
 

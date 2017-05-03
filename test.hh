@@ -31,9 +31,9 @@ int compare_double(std::vector<Eigen::VectorXd> propagation,
 
 void grammar_learn(bool symmetrical, bool lstm);
 
-void single_grammar_evaluate(Network network, int words_to_test);
+void single_grammar_evaluate(NetworkNeuron network, int words_to_test);
 
-void double_grammar_evaluate(Network network, int words_to_test);
+void double_grammar_evaluate(NetworkNeuron network, int words_to_test);
 
 std::vector<Eigen::VectorXd> real_outputs(std::vector<Eigen::VectorXd> outputs, int end_size);
 

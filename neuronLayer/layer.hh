@@ -15,12 +15,12 @@
 
 class Layer {
  public:
-    Weights* weights;
+    WeightsNeuron* weights;
     Eigen::VectorXd input;
     Eigen::VectorXd previous_output;
     Eigen::VectorXd output;
 
-    explicit Layer(Weights* weights);
+    explicit Layer(WeightsNeuron* weights);
     Eigen::VectorXd compute(Eigen::VectorXd input,
                             Eigen::VectorXd previous_output);
 
