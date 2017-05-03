@@ -14,8 +14,8 @@
 #include <vector>
 #include "test.hh"
 
-#include "neuronLayer/weights.hh"
-#include "neuronLayer/network.hh"
+#include "neuronLayer/weightsNeuron.hh"
+#include "neuronLayer/networkNeuron.hh"
 
 #include "lstmCell/weightsLSTM.hh"
 #include "lstmCell/networkLSTM.hh"

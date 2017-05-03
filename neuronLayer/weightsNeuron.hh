@@ -4,8 +4,8 @@
 // PinaPL
 //
 
-#ifndef WEIGHTS_HH
-#define WEIGHTS_HH
+#ifndef WEIGHTSNEURON_HH
+#define WEIGHTSNEURON_HH
 
 #include <eigen3/Eigen/Dense>
 #include <stdexcept>

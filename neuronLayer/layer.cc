@@ -7,7 +7,7 @@
 #include <eigen3/Eigen/Dense>
 #include <vector>
 #include <stdexcept>
-#include "./weights.hh"
+#include "./weightsNeuron.hh"
 #include "./layer.hh"
 #include "../functions.hh"
 // #include "functions.hh"

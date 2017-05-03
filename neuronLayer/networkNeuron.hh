@@ -3,8 +3,8 @@
 // layer.hh
 // PinaPL
 //
-#ifndef NETWORK_HH
-#define NETWORK_HH
+#ifndef NETWORKNEURON_HH
+#define NETWORKNEURON_HH
 
 #include <math.h>
 #include <eigen3/Eigen/Dense>

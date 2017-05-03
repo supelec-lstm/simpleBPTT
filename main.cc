@@ -8,8 +8,8 @@
 #include <string>
 #include <fstream>
 #include <stdexcept>
-// #include "neuronLayer/weights.hh"
-// #include "neuronLayer/network.hh"
+// #include "neuronLayer/weightsNeuron.hh"
+// #include "neuronLayer/networkNeuron.hh"
 // #include "neuronLayer/layer.hh"
 #include "functions.hh"
 #include "iostream"

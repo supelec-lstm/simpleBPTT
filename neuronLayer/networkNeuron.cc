@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 #include "./layer.hh"
-#include "./network.hh"
+#include "./networkNeuron.hh"
 #include "../functions.hh"
 
 Network::Network(Weights* weights, int input_size, int output_size,

@@ -13,8 +13,8 @@
 #include <fstream>
 #include <map>
 #include <vector>
-#include "neuronLayer/weights.hh"
-#include "neuronLayer/network.hh"
+#include "neuronLayer/weightsNeuron.hh"
+#include "neuronLayer/networkNeuron.hh"
 
 
 void single_cell_test();

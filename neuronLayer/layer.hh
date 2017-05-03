@@ -11,7 +11,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "./weights.hh"
+#include "./weightsNeuron.hh"
 
 class Layer {
  public:
