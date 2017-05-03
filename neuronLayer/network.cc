@@ -10,9 +10,9 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "layer.hh"
-#include "network.hh"
-#include "functions.hh"
+#include "./layer.hh"
+#include "./network.hh"
+#include "../functions.hh"
 
 Network::Network(Weights* weights, int input_size, int output_size,
                 int layer_size) {

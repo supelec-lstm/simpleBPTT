@@ -10,10 +10,10 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "cell.hh"
-#include "networkLSTM.hh"
-#include "functions.hh"
-#include "weightsLSTM.hh"
+#include "./cell.hh"
+#include "./networkLSTM.hh"
+#include "./weightsLSTM.hh"
+#include "../functions.hh"
 
 NetworkLSTM::NetworkLSTM(WeightsLSTM* weights, int input_size, int output_size,
                 int layer_size) {

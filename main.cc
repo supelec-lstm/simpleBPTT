@@ -8,15 +8,15 @@
 #include <string>
 #include <fstream>
 #include <stdexcept>
-#include "weights.hh"
-#include "network.hh"
-#include "layer.hh"
+// #include "neuronLayer/weights.hh"
+// #include "neuronLayer/network.hh"
+// #include "neuronLayer/layer.hh"
 #include "functions.hh"
 #include "iostream"
 #include "test.hh"
-#include "weightsLSTM.hh"
-#include "networkLSTM.hh"
-#include "cell.hh"
+#include "lstmCell/weightsLSTM.hh"
+#include "lstmCell/networkLSTM.hh"
+#include "lstmCell/cell.hh"
 
 
 int main(int argc, char **argv) {

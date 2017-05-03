@@ -7,9 +7,9 @@
 #include <eigen3/Eigen/Dense>
 #include <vector>
 #include <stdexcept>
-#include "weightsLSTM.hh"
-#include "cell.hh"
-#include "functions.hh"
+#include "./weightsLSTM.hh"
+#include "./cell.hh"
+#include "../functions.hh"
 
 Cell::Cell(WeightsLSTM* weights) {
     this->weights = weights;
@@ -66,8 +66,8 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     // Computes do
     Eigen::VectorXd delta_output_gate =
         delta_cell_out.cwiseProduct(this->cell_state.unaryExpr(&tanh))
-            .cwiseProduct(this->output_gate_out)
-            .cwiseProduct(Eigen::VectorXd::Ones(this->weights->output_size) - this->output_gate_out);  // CHECKED
+            .cwiseProduct(this->output_gate_out).cwiseProduct(
+                Eigen::VectorXd::Ones(this->weights->output_size) - this->output_gate_out);
 
     // Computes and stores the weights' variations
     this->weights->delta_W_in_output_gate +=
@@ -88,7 +88,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     // Computes di
     Eigen::VectorXd delta_input_gate = delta_cell_state.cwiseProduct(this->input_block_out)
         .cwiseProduct(this->input_gate_out)
-        .cwiseProduct(Eigen::VectorXd::Ones(this->weights->output_size) - this->input_gate_out);;  // CHECKED
+        .cwiseProduct(Eigen::VectorXd::Ones(this->weights->output_size) - this->input_gate_out);
 
     this->weights->delta_W_in_input_gate +=
         delta_input_gate * this->input.transpose();
@@ -100,7 +100,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
         Eigen::VectorXd delta_input_block =
             delta_cell_state.cwiseProduct(this->input_gate_out).cwiseProduct(
               Eigen::VectorXd::Ones(this->weights->output_size)
-              - this->input_block_out.array().pow(2).matrix());  // CHECKED
+              - this->input_block_out.array().pow(2).matrix());
 
         this->weights->delta_W_in_input_block +=
             delta_input_block * this->input.transpose();

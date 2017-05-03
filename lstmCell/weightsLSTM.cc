@@ -6,7 +6,7 @@
 
 #include <eigen3/Eigen/Dense>
 #include <random>
-#include "weightsLSTM.hh"
+#include "./weightsLSTM.hh"
 
 WeightsLSTM::WeightsLSTM(int input_size, int output_size) {
     this->input_size = input_size;

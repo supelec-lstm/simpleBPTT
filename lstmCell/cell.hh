@@ -11,7 +11,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "weightsLSTM.hh"
+#include "./weightsLSTM.hh"
 
 class Cell {
     WeightsLSTM* weights;

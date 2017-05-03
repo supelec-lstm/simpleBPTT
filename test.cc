@@ -13,8 +13,12 @@
 #include <map>
 #include <vector>
 #include "test.hh"
-#include "weights.hh"
-#include "network.hh"
+
+#include "neuronLayer/weights.hh"
+#include "neuronLayer/network.hh"
+
+#include "lstmCell/weightsLSTM.hh"
+#include "lstmCell/networkLSTM.hh"
 
 void single_cell_test() {
     int input_size = 26;

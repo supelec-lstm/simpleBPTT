@@ -3,27 +3,28 @@
 // layer.hh
 // PinaPL
 //
-#ifndef NETWORK_HH
-#define NETWORK_HH
+#ifndef NETWORKLSTM_HH
+#define NETWORKLSTM_HH
 
 #include <math.h>
 #include <eigen3/Eigen/Dense>
 #include <vector>
 #include <stdexcept>
 
-#include "layer.hh"
-#include "functions.hh"
+#include "./cell.hh"
+#include "./weightsLSTM.hh"
+#include "../functions.hh"
 
-class Network {
+class NetworkLSTM {
  public:
-    Weights* weights;
+    WeightsLSTM* weights;
     int input_size;
     int output_size;
     int layer_size;
 
-    std::vector<Layer> layers;
+    std::vector<Cell> cells;
 
-    Network(Weights* weights, int input_size, int output_size, int layer_size);
+    NetworkLSTM(WeightsLSTM* weights, int input_size, int output_size, int layer_size);
     std::vector<Eigen::VectorXd> propagate(std::vector<Eigen::VectorXd> inputs);
 
     void backpropagate(std::vector<Eigen::VectorXd> expected_outputs);

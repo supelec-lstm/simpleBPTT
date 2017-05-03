@@ -7,7 +7,7 @@
 #include <eigen3/Eigen/Dense>
 #include <random>
 #include <stdexcept>
-#include "weights.hh"
+#include "./weights.hh"
 
 Weights::Weights(int input_size, int output_size) {
     this->input_size = input_size;

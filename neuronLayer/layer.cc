@@ -7,9 +7,9 @@
 #include <eigen3/Eigen/Dense>
 #include <vector>
 #include <stdexcept>
-#include "weights.hh"
-#include "layer.hh"
-#include "functions.hh"
+#include "./weights.hh"
+#include "./layer.hh"
+#include "../functions.hh"
 // #include "functions.hh"
 
 Layer::Layer(Weights* weights) {
