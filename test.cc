@@ -153,7 +153,7 @@ int compare_double(std::vector<Eigen::VectorXd> real_outputs,
 }
 
 // Learn a grammar
-void grammar_learn(bool symmetrical, bool lstm) {
+void grammar_learn(bool symmetrical) {
     int input_size = 7;
     int output_size = 7;
     int layer_size = 30;
@@ -243,6 +243,144 @@ void single_grammar_evaluate(NetworkNeuron network, int words_to_test) {
 }
 
 void double_grammar_evaluate(NetworkNeuron network, int words_to_test) {
+    // Here we test the symmetrical reber grammar
+    // Initialisation bloc
+    std::ifstream file("symmetrical_reber_test_1M.txt");
+    std::string str;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+
+    int remaining_words_to_test = words_to_test;
+
+    // We add an offset
+    int offset;
+
+    // time seed
+    srand(time(NULL));
+
+    offset = rand() % 10000;  // between 0 and 9999
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
+
+    int score = 0;
+
+    // While we have words to test
+    while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
+        int lenght_word = str.length();
+        // We read each letter
+        for (int i = 0; i < lenght_word-1; ++i) {
+            // We populate the inputs and outputs datasets
+            inputs.push_back(get_input(str.at(i)));
+            expected_outputs.push_back(get_input(str.at(i+1)));
+        }
+
+        propagation = network.propagate(inputs);
+
+        // We clean everything just after
+        network.reset_layers();
+        inputs.clear();
+        score += compare_double(apply_threshold(real_outputs(propagation, network.output_size)),
+                                expected_outputs);
+        expected_outputs.clear();
+        remaining_words_to_test -= 1;
+    }
+
+    float score_percent = (float) 100 * score / words_to_test;
+    std::cout << "," << score_percent << '\n';
+}
+
+void grammar_learn_LSTM(bool symmetrical) {
+    int input_size = 7;
+    int output_size = 7;
+    int layer_size = 30;
+    int batch_to_learn = 10000;
+    int batch_size = 10;
+    int current_batch_size;
+    int offset;
+
+    // time seed
+    srand(time(NULL));
+
+    // random offset in data set
+    offset = rand() % 100000;
+
+    WeightsLSTM* weights = new WeightsLSTM(input_size, layer_size);
+    NetworkLSTM network = NetworkLSTM(weights, input_size, output_size, layer_size);
+
+    std::ifstream file(open_file(symmetrical));
+    std::string str;
+    std::vector<Eigen::VectorXd> deltas;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+
+    // std::cout << "===== Beginnning of Learning =====" << '\n';
+    for (int batch = 0; batch < batch_to_learn; batch++) {
+        // std::cout << "batch no"<< batch;
+        std::cout << batch;
+        current_batch_size = batch_size;
+        while ((std::getline(file, str)) && (0 < current_batch_size)) {
+            int lenght_word = str.length();
+            for (int i = 0; i < lenght_word-1; ++i) {
+                inputs.push_back(get_input(str.at(i)));
+                expected_outputs.push_back(get_input(str.at(i+1)));
+            }
+            propagation = network.propagate(inputs);
+            network.backpropagate(expected_outputs);
+            network.reset_layers();
+            inputs.clear();
+            expected_outputs.clear();
+            weights->apply_gradient(0.1);
+            current_batch_size -= 1;
+        }
+        if (symmetrical) {
+            double_grammar_evaluate_LSTM(network, 1000);
+        } else {
+            single_grammar_evaluate_LSTM(network, 1000);
+        }
+    }
+}
+void single_grammar_evaluate_LSTM(NetworkLSTM network, int words_to_test) {
+    std::ifstream file("reber_test_1M.txt");
+    std::string str;
+    std::vector<Eigen::VectorXd> inputs;
+    std::vector<Eigen::VectorXd> propagation;
+    std::vector<Eigen::VectorXd> expected_outputs;
+    int score = 0;
+    int remaining_words_to_test = words_to_test;
+
+    // We add an offset
+    int offset;
+
+    // time seed
+    srand(time(NULL));
+
+    offset = rand() % 10000;  // between 0 and 9999
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
+
+    while ((std::getline(file, str)) && (0 < remaining_words_to_test)) {
+        int lenght_word = str.length();
+        for (int i = 0; i < lenght_word-1; ++i) {
+            inputs.push_back(get_input(str.at(i)));
+            expected_outputs.push_back(get_input(str.at(i+1)));
+        }
+        propagation = network.propagate(inputs);
+        network.reset_layers();
+        inputs.clear();
+        score += compare(apply_threshold(real_outputs(propagation, network.output_size)),
+                         expected_outputs);
+        expected_outputs.clear();
+        remaining_words_to_test -= 1;
+    }
+    float score_percent = (float) 100 * score / words_to_test;
+    std::cout << "," <<score_percent << '\n';
+}
+
+void double_grammar_evaluate_LSTM(NetworkLSTM network, int words_to_test) {
     // Here we test the symmetrical reber grammar
     // Initialisation bloc
     std::ifstream file("symmetrical_reber_test_1M.txt");

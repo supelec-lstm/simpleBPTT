@@ -148,9 +148,9 @@ int main(int argc, char **argv) {
     std::cout << "propagate[1]" << '\n';
     std::cout << propagation.at(1) << '\n';
     */
-    // single_cell_test();
-    // single_grammar_test();
-    // single_grammar_learn();
+
     // grammar_learn(true);
+
+    grammar_learn_LSTM(true);
     return 0;
 }
