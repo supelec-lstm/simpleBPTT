@@ -352,12 +352,7 @@ void single_grammar_evaluate_LSTM(NetworkLSTM network, int words_to_test) {
     int remaining_words_to_test = words_to_test;
 
     // We add an offset
-    int offset;
-
-    // time seed
-    srand(time(NULL));
-
-    offset = rand() % 10000;  // between 0 and 9999
+    int offset = rand() % 10000;  // between 0 and 9999
     for (int i = 0; i < offset; i++) {
         std::getline(file, str);  // dirty way of skipping lines
     }
@@ -392,12 +387,7 @@ void double_grammar_evaluate_LSTM(NetworkLSTM network, int words_to_test) {
     int remaining_words_to_test = words_to_test;
 
     // We add an offset
-    int offset;
-
-    // time seed
-    srand(time(NULL));
-
-    offset = rand() % 10000;  // between 0 and 9999
+    int offset = rand() % 10000;  // between 0 and 9999
     for (int i = 0; i < offset; i++) {
         std::getline(file, str);  // dirty way of skipping lines
     }
