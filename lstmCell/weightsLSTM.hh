@@ -35,6 +35,11 @@ class WeightsLSTM {
     Eigen::MatrixXd W_prev_input_block;
     Eigen::MatrixXd W_prev_output_gate;
 
+    Eigen::VectorXd bias_forget_gate;
+    Eigen::VectorXd bias_input_gate;
+    Eigen::VectorXd bias_input_block;
+    Eigen::VectorXd bias_output_gate;
+
     //   Information :
     // W_in means the weight matrix applied to the new INPUT
     // W_st means the weight matrix applied to the previous cell STATE
@@ -47,6 +52,11 @@ class WeightsLSTM {
     Eigen::MatrixXd delta_W_prev_input_gate;
     Eigen::MatrixXd delta_W_prev_input_block;
     Eigen::MatrixXd delta_W_prev_output_gate;
+
+    Eigen::VectorXd delta_bias_forget_gate;
+    Eigen::VectorXd delta_bias_input_gate;
+    Eigen::VectorXd delta_bias_input_block;
+    Eigen::VectorXd delta_bias_output_gate;
 
     int input_size;
     int output_size;

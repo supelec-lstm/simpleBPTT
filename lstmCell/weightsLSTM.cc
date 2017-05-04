@@ -47,16 +47,16 @@ srand(time(NULL));
         this->output_size,
         this->output_size);
 
-/*
+
     this->bias_forget_gate = 0.1
-        * Eigen::MatrixXd::Random(this->output_size, 1);
+        * Eigen::VectorXd::Random(this->output_size);
     this->bias_input_gate = 0.1
-        * Eigen::MatrixXd::Random(this->output_size, 1);
+        * Eigen::VectorXd::Random(this->output_size);
     this->bias_input_block = 0.1
-        * Eigen::MatrixXd::Random(this->output_size, 1);
+        * Eigen::VectorXd::Random(this->output_size);
     this->bias_output_gate = 0.1
-        * Eigen::MatrixXd::Random(this->output_size, 1);
-*/
+        * Eigen::VectorXd::Random(this->output_size);
+
 
 
 // We initialize a null gradient
@@ -92,12 +92,11 @@ srand(time(NULL));
     this->delta_W_prev_output_gate = Eigen::MatrixXd::Zero(
         this->output_size,
         this->output_size);
-/*
-    this->delta_bias_forget_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->delta_bias_input_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->delta_bias_input_block = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->delta_bias_output_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-*/
+
+    this->delta_bias_forget_gate = Eigen::VectorXd::Zero(this->output_size);
+    this->delta_bias_input_gate = Eigen::VectorXd::Zero(this->output_size);
+    this->delta_bias_input_block = Eigen::VectorXd::Zero(this->output_size);
+    this->delta_bias_output_gate = Eigen::VectorXd::Zero(this->output_size);
 }
 void WeightsLSTM::apply_gradient(double lambda) {
 // We apply the weight variations
@@ -133,12 +132,12 @@ void WeightsLSTM::apply_gradient(double lambda) {
         this->W_prev_output_gate
         + lambda * this->delta_W_prev_output_gate;
 
-/*
+
     this->bias_forget_gate -= lambda * this->delta_bias_forget_gate;
     this->bias_input_gate -= lambda * this->delta_bias_input_gate;
     this->bias_input_block -= lambda * this->delta_bias_input_block;
     this->bias_output_gate -= lambda * this->delta_bias_output_gate;
-*/
+
 
 // We set a null gradient
     this->delta_W_in_forget_gate = Eigen::MatrixXd::Zero(
@@ -172,10 +171,9 @@ void WeightsLSTM::apply_gradient(double lambda) {
     this->delta_W_prev_output_gate = Eigen::MatrixXd::Zero(
         this->output_size,
         this->output_size);
-/*
-    this->bias_forget_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->bias_input_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->bias_input_block = Eigen::MatrixXd::Zero(this->output_size, 1);
-    this->bias_output_gate = Eigen::MatrixXd::Zero(this->output_size, 1);
-*/
+
+    this->bias_forget_gate = Eigen::VectorXd::Zero(this->output_size);
+    this->bias_input_gate = Eigen::VectorXd::Zero(this->output_size);
+    this->bias_input_block = Eigen::VectorXd::Zero(this->output_size);
+    this->bias_output_gate = Eigen::VectorXd::Zero(this->output_size);
 }
