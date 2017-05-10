@@ -77,6 +77,13 @@ Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
     }
 }
 
+Eigen::VectorXd softmax(Eigen::VectorXd output) {
+    output = output.unaryExpr(&exp);
+    double exp_sum = (Eigen::MatrixXd::Ones(1, output.size()) * output)(0);
+    output = (1/exp_sum) * output;
+    return(output);
+}
+
 double threshold(double x) {
     double level = 0.3;
     if (x > level) {

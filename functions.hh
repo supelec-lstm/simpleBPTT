@@ -24,5 +24,6 @@ Eigen::VectorXd costfunction(Eigen::VectorXd expected_output, Eigen::VectorXd ou
 Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output);
 double threshold(double x);
+Eigen::VectorXd softmax(Eigen::VectorXd output);
 std::string open_file(bool dual);
 #endif
