@@ -162,9 +162,6 @@ void grammar_learn(bool symmetrical) {
     int current_batch_size;
     int offset;
 
-    // random offset in data set
-    offset = rand() % 100000;
-
     WeightsNeuron* weights = new WeightsNeuron(input_size, layer_size);
     NetworkNeuron network = NetworkNeuron(weights, input_size, output_size, layer_size);
 
@@ -174,6 +171,12 @@ void grammar_learn(bool symmetrical) {
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
+
+    // random offset in data set
+    offset = rand() % 100000;
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
 
     // std::cout << "===== Beginnning of Learning =====" << '\n';
     for (int batch = 0; batch < batch_to_learn; batch++) {
@@ -213,9 +216,6 @@ void single_grammar_evaluate(NetworkNeuron network, int words_to_test) {
     // We add an offset
     int offset;
 
-    // time seed
-    srand(time(NULL));
-
     offset = rand() % 10000;  // between 0 and 9999
     for (int i = 0; i < offset; i++) {
         std::getline(file, str);  // dirty way of skipping lines
@@ -252,10 +252,6 @@ void double_grammar_evaluate(NetworkNeuron network, int words_to_test) {
 
     // We add an offset
     int offset;
-
-    // time seed
-    srand(time(NULL));
-
     offset = rand() % 10000;  // between 0 and 9999
     for (int i = 0; i < offset; i++) {
         std::getline(file, str);  // dirty way of skipping lines
@@ -297,12 +293,6 @@ void grammar_learn_LSTM(bool symmetrical) {
     int current_batch_size;
     int offset;
 
-    // time seed
-    srand(time(NULL));
-
-    // random offset in data set
-    offset = rand() % 100000;
-
     WeightsLSTM* weights = new WeightsLSTM(input_size, layer_size);
     NetworkLSTM network = NetworkLSTM(weights, input_size, output_size, layer_size);
 
@@ -312,6 +302,12 @@ void grammar_learn_LSTM(bool symmetrical) {
     std::vector<Eigen::VectorXd> inputs;
     std::vector<Eigen::VectorXd> propagation;
     std::vector<Eigen::VectorXd> expected_outputs;
+
+    // random offset in data set
+    offset = rand() % 100000;
+    for (int i = 0; i < offset; i++) {
+        std::getline(file, str);  // dirty way of skipping lines
+    }
 
     // std::cout << "===== Beginnning of Learning =====" << '\n';
     for (int batch = 0; batch < batch_to_learn; batch++) {

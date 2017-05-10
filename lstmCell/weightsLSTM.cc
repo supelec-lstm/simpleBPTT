@@ -12,8 +12,6 @@ WeightsLSTM::WeightsLSTM(int input_size, int output_size) {
     this->input_size = input_size;
     this->output_size = output_size;
 
-// We make sure the random seed is initialized
-srand(time(NULL));
 // We initialize random weights
     this->W_in_forget_gate = 0.1 * Eigen::MatrixXd::Random(
         this->output_size,
