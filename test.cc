@@ -162,9 +162,6 @@ void grammar_learn(bool symmetrical) {
     int current_batch_size;
     int offset;
 
-    // time seed
-    srand(time(NULL));
-
     // random offset in data set
     offset = rand() % 100000;
 

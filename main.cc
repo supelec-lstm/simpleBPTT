@@ -17,7 +17,7 @@
 #include "lstmCell/weightsLSTM.hh"
 #include "lstmCell/networkLSTM.hh"
 #include "lstmCell/cell.hh"
-
+#include "sys/time.h"
 
 int main(int argc, char **argv) {
     /*
@@ -149,8 +149,13 @@ int main(int argc, char **argv) {
     std::cout << propagation.at(1) << '\n';
     */
 
-    // grammar_learn(true);
+    timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    // time seed
+    srand((uint64_t)ts.tv_nsec);
 
-    grammar_learn_LSTM(true);
+    grammar_learn(true);
+
+    // grammar_learn_LSTM(false);
     return 0;
 }
