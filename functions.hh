@@ -26,4 +26,5 @@ Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
 double threshold(double x);
 Eigen::VectorXd softmax(Eigen::VectorXd output);
 std::string open_file(bool dual);
+double tanh_computed_derivative(double x);
 #endif

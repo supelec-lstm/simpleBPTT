@@ -32,7 +32,7 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
     this->input_block_out =
         ((this->weights->W_in_input_block * input
         + this->weights->W_prev_input_block * previous_cell_state)
-        + this->weights->bias_input_block).unaryExpr(&tanhyp);
+        + this->weights->bias_input_block).unaryExpr(&tanh);
 
     // Computes the output gate output
     this->output_gate_out =
@@ -66,8 +66,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     // Computes do
     Eigen::VectorXd delta_output_gate =
         delta_cell_out.cwiseProduct(this->cell_state.unaryExpr(&tanh))
-            .cwiseProduct(this->output_gate_out).cwiseProduct(
-                Eigen::VectorXd::Ones(this->weights->output_size) - this->output_gate_out);
+            .cwiseProduct(this->output_gate_out.unaryExpr(&sigmoid_derivative));
 
     // Computes and stores the weights' variations
     this->weights->delta_W_in_output_gate +=
@@ -82,16 +81,14 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     // Computes dc
     Eigen::VectorXd delta_cell_state = previous_delta_cell_state
         + delta_cell_out.cwiseProduct(this->output_gate_out)
-        .cwiseProduct(Eigen::VectorXd::Ones(this->weights->output_size)
-        - this->cell_state.unaryExpr(&tanh2));  // CHECKED
+        .cwiseProduct(this->cell_state.unaryExpr(&tanh_derivative));  // CHECKED
 
     // Computes df
     //    Eigen::VectorXd delta_forget_gate;
 
     // Computes di
     Eigen::VectorXd delta_input_gate = delta_cell_state.cwiseProduct(this->input_block_out)
-        .cwiseProduct(this->input_gate_out)
-        .cwiseProduct(Eigen::VectorXd::Ones(this->weights->output_size) - this->input_gate_out);
+        .cwiseProduct(this->input_gate_out.unaryExpr(&sigmoid_derivative));
 
     this->weights->delta_W_in_input_gate +=
         delta_input_gate * this->input.transpose();
@@ -105,8 +102,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
     // Computes dz
     Eigen::VectorXd delta_input_block =
         delta_cell_state.cwiseProduct(this->input_gate_out).cwiseProduct(
-            Eigen::VectorXd::Ones(this->weights->output_size)
-            - this->input_block_out.array().pow(2).matrix());
+            this->input_block_out.unaryExpr(&tanh_computed_derivative));
 
     this->weights->delta_W_in_input_block +=
         delta_input_block * this->input.transpose();
