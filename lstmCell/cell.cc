@@ -47,7 +47,7 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
 
     // Computes the cell output
     this->cell_out =
-        this->cell_state.unaryExpr(&tanhyp).cwiseProduct(this->output_gate_out);
+        this->cell_state.unaryExpr(&tanh).cwiseProduct(this->output_gate_out);
 
     // Craft the result to return [cell_out, cell_state]
     std::vector<Eigen::VectorXd> result;
@@ -103,16 +103,16 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
         + this->weights->delta_bias_input_gate;
 
     // Computes dz
-        Eigen::VectorXd delta_input_block =
-            delta_cell_state.cwiseProduct(this->input_gate_out).cwiseProduct(
-              Eigen::VectorXd::Ones(this->weights->output_size)
-              - this->input_block_out.array().pow(2).matrix());
+    Eigen::VectorXd delta_input_block =
+        delta_cell_state.cwiseProduct(this->input_gate_out).cwiseProduct(
+            Eigen::VectorXd::Ones(this->weights->output_size)
+            - this->input_block_out.array().pow(2).matrix());
 
-        this->weights->delta_W_in_input_block +=
-            delta_input_block * this->input.transpose();
+    this->weights->delta_W_in_input_block +=
+        delta_input_block * this->input.transpose();
 
-        this->weights->delta_W_prev_input_block +=
-    delta_input_block * this->previous_output.transpose();
+    this->weights->delta_W_prev_input_block +=
+        delta_input_block * this->previous_output.transpose();
 
     this->weights->delta_bias_input_block = delta_input_block
         + this->weights->delta_bias_input_block;
