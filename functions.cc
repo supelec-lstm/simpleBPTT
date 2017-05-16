@@ -64,7 +64,7 @@ Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
     // The layer size is the output size
     if (expected_output.size() == output.size()) {
         // in this case, everything is ok, just return the cost derivative
-        return((expected_output-output).cwiseProduct(expected_output-output));
+        return(expected_output-output);
     // If not, we have to make a little hack
     } else {
         int layer_size = output.size();
