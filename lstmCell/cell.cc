@@ -32,7 +32,7 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
     this->input_block_out =
         ((this->weights->W_in_input_block * input
         + this->weights->W_prev_input_block * previous_cell_state)
-        + this->weights->bias_input_block).unaryExpr(&tanh);
+        + this->weights->bias_input_block).unaryExpr(&tanhyp);
 
     // Computes the output gate output
     this->output_gate_out =
@@ -47,7 +47,7 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
 
     // Computes the cell output
     this->cell_out =
-        this->cell_state.unaryExpr(&tanh).cwiseProduct(this->output_gate_out);
+        this->cell_state.unaryExpr(&tanhyp).cwiseProduct(this->output_gate_out);
 
     // Craft the result to return [cell_out, cell_state]
     std::vector<Eigen::VectorXd> result;
@@ -65,7 +65,7 @@ std::vector<Eigen::VectorXd> Cell::compute_gradient(Eigen::VectorXd deltas,
 
     // Computes do
     Eigen::VectorXd delta_output_gate =
-        delta_cell_out.cwiseProduct(this->cell_state.unaryExpr(&tanh))
+        delta_cell_out.cwiseProduct(this->cell_state.unaryExpr(&tanhyp))
             .cwiseProduct(this->output_gate_out.unaryExpr(&sigmoid_derivative));
 
     // Computes and stores the weights' variations

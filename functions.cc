@@ -43,6 +43,10 @@ double tanhyp(double x) {
     return tanh(x);
 }
 
+double expo(double x) {
+    return exp(x);
+}
+
 Eigen::VectorXd costfunction(Eigen::VectorXd expected_output,
                              Eigen::VectorXd output) {
     // We have two cases :
@@ -82,7 +86,7 @@ Eigen::VectorXd costfunction_derivative(Eigen::VectorXd expected_output,
 }
 
 Eigen::VectorXd softmax(Eigen::VectorXd output) {
-    output = output.unaryExpr(&exp);
+    output = output.unaryExpr(&expo);
     double exp_sum = (Eigen::MatrixXd::Ones(1, output.size()) * output)(0);
     output = (1/exp_sum) * output;
     return(output);
