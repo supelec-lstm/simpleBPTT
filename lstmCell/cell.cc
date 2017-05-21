@@ -25,19 +25,19 @@ std::vector<Eigen::VectorXd> Cell::compute(Eigen::VectorXd previous_output,
     // Computes the input gate output
     this->input_gate_out =
         ((this->weights->W_in_input_gate * input
-        + this->weights->W_prev_input_gate * previous_cell_state)
+        + this->weights->W_prev_input_gate * previous_output)
         + this->weights->bias_input_gate).unaryExpr(&sigmoid);
 
     // Computes the input bloc output
     this->input_block_out =
         ((this->weights->W_in_input_block * input
-        + this->weights->W_prev_input_block * previous_cell_state)
+        + this->weights->W_prev_input_block * previous_output)
         + this->weights->bias_input_block).unaryExpr(&tanh);
 
     // Computes the output gate output
     this->output_gate_out =
         ((this->weights->W_in_output_gate * input
-        + this->weights->W_prev_output_gate * previous_cell_state)
+        + this->weights->W_prev_output_gate * previous_output)
         + this->weights->bias_output_gate).unaryExpr(&sigmoid);
 
     // Computes the new cell state
